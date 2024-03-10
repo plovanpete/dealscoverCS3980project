@@ -1,7 +1,8 @@
 # Dealscover
-![8iohag](https://github.com/plovanpete/dealscoverCS3980project/assets/145849883/c7001137-1694-4984-9abe-efd33da7c42c)
+![ApplicationScreenshot](https://github.com/plovanpete/dealscoverCS3980project/assets/145849883/f691d7eb-98e3-46fd-b674-473536716a04)
 
-A work in progress application where you find deals near you and post them!
+A work in progress application where you find deals/coupons near you and post them!
+(As of now, you can type in coupons or deals and it will only appear at a list)
 
 ## Instructions to start it and load it:
 For now, you'll need 3 modules: fastapi, uvicorn, and pydantic.
