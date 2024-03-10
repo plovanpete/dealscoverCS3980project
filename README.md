@@ -18,7 +18,7 @@ uvicorn main:app --reload
 ## Descriptions of each file:
 **main.py**: The file that allows the server to run.
 
-**coupon.py**: The file that allows the CRUD operations to run in the backend.
+**coupon.py**: The file that allows the CRUD operations to process in the backend.
 
 **model.py**: The classes that are made for coupon.py
 
@@ -26,7 +26,7 @@ uvicorn main:app --reload
 
 **index.html**: The HTML file that is rendered onto the page, uses Bootstrap for styling the buttons, text, and list.
 
-**script.js**: The javascript file that handles the logic and displays messages if things are not filled. Page is automatically updated each time a deal/coupon is created, updated, or deleted.
+**script.js**: The javascript file that handles the logic, sending requests to backend, and displays messages if things are not filled. Page is automatically updated each time a deal/coupon is created, updated, or deleted.
 
 ## Roadmap:
 The document and outline can be found here for final project:
