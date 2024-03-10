@@ -24,10 +24,10 @@ uvicorn main:app --reload
 
 #### _Inside the Frontend Folder_:
 
-**index.html**: The HTML file that is rendered onto the page, uses Bootstrap for styling the buttons,text, and list.
+**index.html**: The HTML file that is rendered onto the page, uses Bootstrap for styling the buttons, text, and list.
 
-**script.js**: The javascript file that handles the logic and displays messages if things are not filled. Page is automatically updated each time a deal/coupon is created,updated, or deleted.
+**script.js**: The javascript file that handles the logic and displays messages if things are not filled. Page is automatically updated each time a deal/coupon is created, updated, or deleted.
 
 ## Roadmap:
-The document and Outline can be found here for final project:
+The document and outline can be found here for final project:
 https://docs.google.com/document/d/1uGfQXSzGdjfWUUzGYpOBJLe7kYVDbonJf0ftApabEuU/edit?usp=sharing
