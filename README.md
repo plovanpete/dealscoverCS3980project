@@ -2,7 +2,7 @@
 ![ApplicationScreenshot](https://github.com/plovanpete/dealscoverCS3980project/assets/145849883/f691d7eb-98e3-46fd-b674-473536716a04)
 
 A work in progress application where you find deals/coupons near you and post them!
-(As of now, you can type in coupons or deals and it will only appear at a list)
+(As of now, you can type in coupons or deals and it will only appear at a list. Planning to implement a Map API so that users can click on them and post coupons/deals.)
 
 ## Instructions to start it and load it:
 For now, you'll need 3 modules: fastapi, uvicorn, and pydantic.
@@ -25,7 +25,7 @@ uvicorn main:app --reload
 
 **index.html**: The HTML file that is rendered onto the page, uses Bootstrap for styling the buttons,text, and list.
 
-**script.js**: The javascript file that handles the logic and displays messages if things are not filled.
+**script.js**: The javascript file that handles the logic and displays messages if things are not filled. Page is automatically updated each time a deal/coupon is created,updated, or deleted.
 
 ## Roadmap:
 The document and Outline can be found here for final project:
