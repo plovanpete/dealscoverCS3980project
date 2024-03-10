@@ -14,6 +14,19 @@ You can then run it with this command once those three modules are installed:
 uvicorn main:app --reload
 ```
 
+## Descriptions of each file:
+**main.py**: The file that allows the server to run.
+
+**coupon.py**: The file that allows the CRUD operations to run in the backend.
+
+**model.py**: The classes that are made for coupon.py
+
+### Inside the Frontend Folder:
+
+**index.html**: The HTML file that is rendered onto the page, uses Bootstrap for styling the buttons,text, and list.
+
+**script.js**: The javascript file that handles the logic and displays messages if things are not filled.
+
 ## Roadmap:
 The document and Outline can be found here for final project:
 https://docs.google.com/document/d/1uGfQXSzGdjfWUUzGYpOBJLe7kYVDbonJf0ftApabEuU/edit?usp=sharing
