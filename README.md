@@ -21,7 +21,7 @@ uvicorn main:app --reload
 
 **model.py**: The classes that are made for coupon.py
 
-### Inside the Frontend Folder:
+#### Inside the Frontend Folder:
 
 **index.html**: The HTML file that is rendered onto the page, uses Bootstrap for styling the buttons,text, and list.
 
