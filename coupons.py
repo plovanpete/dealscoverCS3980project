@@ -2,7 +2,7 @@ from fastapi import APIRouter, HTTPException, Path, status
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
 from typing import Annotated
-from model import Coupon, CouponRequest
+from CouponModel import Coupon, CouponRequest
 
 coupons_router = APIRouter()
 coupons_db: list[Coupon] = []
