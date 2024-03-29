@@ -21,6 +21,11 @@ async def view_secrets():
 async def view_secrets():
     return FileResponse("./FrontEnd/users/index.html")
 
+@app.get("/login/")
+async def view_login():
+    return FileResponse("./FrontEnd/users/index.html")
+
 app.mount("/", StaticFiles(directory="FrontEnd/couponfinder"), name="coupons")
 app.mount("/dealscreetmenu/", StaticFiles(directory="FrontEnd/secretmenu"), name = "secret")
 app.mount("/users/", StaticFiles(directory="FrontEnd/users"), name = "users")
+app.mount("/login/", StaticFiles(directory="FrontEnd/login"), name = "login")
