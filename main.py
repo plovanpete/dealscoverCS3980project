@@ -31,3 +31,11 @@ async def get_register():
 app.mount("/", StaticFiles(directory="FrontEnd/couponfinder"), name="coupons")
 app.mount("/dealscreetmenu/", StaticFiles(directory="FrontEnd/secretmenu"), name = "secret")
 app.mount("/users/", StaticFiles(directory="FrontEnd/users"), name = "users")
+@app.get("/login/")
+async def view_login():
+    return FileResponse("./FrontEnd/users/index.html")
+
+app.mount("/", StaticFiles(directory="FrontEnd/couponfinder"), name="coupons")
+app.mount("/dealscreetmenu/", StaticFiles(directory="FrontEnd/secretmenu"), name = "secret")
+app.mount("/users/", StaticFiles(directory="FrontEnd/users"), name = "users")
+app.mount("/login/", StaticFiles(directory="FrontEnd/login"), name = "login")
