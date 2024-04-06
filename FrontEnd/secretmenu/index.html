@@ -8,11 +8,47 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
-<body class="container">
+<body>
+    <h2>My Saved Restaurants</h2>
+    <div id="restaurantGrid" class = "row">
+        <!-- Restaurants will be added dynamically here -->
+    </div>
+</body>    
+<script>
+     // Sample data (replace this with your actual data)
+     var restaurants = [
+        { name: "Restaurant A", location: "Location A" },
+        { name: "Restaurant B", location: "Location B" },
+        { name: "Restaurant C", location: "Location C" },
+        { name: "Restaurant D", location: "Location D" },
+        { name: "Restaurant E", location: "Location E" },
+        { name: "Restaurant F", location: "Location F" },
+        { name: "Restaurant G", location: "Location G" }
+        // Add more restaurants as needed
+    ];
 
-    <h2 class="mt-3">This is the secret menu Page.</h2>
+    // Function to create restaurant grid
+    function createRestaurantGrid() {
+        var gridContainer = document.getElementById("restaurantGrid");
 
-   <!-- Section for displaying individual results -->
-   <div id="output"></div>
-</body>
+        // Loop through restaurants data and create grid items
+        restaurants.forEach(function(restaurant) {
+            var gridItem = document.createElement("div");
+            gridItem.className = "col-lg-4 col-md-6 mb-4"; // Bootstrap grid classes
+            gridItem.innerHTML = `
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">${restaurant.name}</h5>
+                        <p class="card-text">${restaurant.location}</p>
+                        <a href="#" class="btn btn-primary">View Details</a>
+                    </div>
+                </div>
+            `;
+            gridContainer.appendChild(gridItem);
+        });
+    }
+
+    // Call the function to create the grid when the page loads
+    window.onload = createRestaurantGrid;
+</script>
 </html>
