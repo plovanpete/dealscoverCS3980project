@@ -71,7 +71,7 @@ function initMap() {
 // Asynchronously load the Google Maps JavaScript API
 function loadMapScript() {
   const script = document.createElement("script");
-  script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyBRrTFJpK4ZqpjHwMF45OUdwwhRH0D_e5Y&libraries=places&callback=initMap`;
+  script.src = `https://maps.googleapis.com/maps/api/js?key=MAP_KEY&libraries=places&callback=initMap`;
   script.defer = true;
   document.body.appendChild(script);
 }
