@@ -3,7 +3,7 @@ from BackEnd.couponfinder.routes.coupons import coupons_router
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 from fastapi import Form, HTTPException, status
-from UserModel import User, registered_users, hash_password
+from BackEnd.users.models.UserModel import User, registered_users, hash_password
 from fastapi.responses import RedirectResponse
 
 
