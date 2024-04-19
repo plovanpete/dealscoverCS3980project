@@ -1,6 +1,5 @@
 # Dealscover
-![appmidterm screenshot](https://github.com/plovanpete/dealscoverCS3980project/assets/145849883/b40274c2-2c49-48d2-a553-e650ffddc3a0)
-
+![couponupdated](https://github.com/plovanpete/dealscoverCS3980project/assets/145849883/1f8452dd-bbb9-486e-b81f-2bb1e87f33d5)
 
 A work in progress application where you find deals/coupons near you and post them!
 (As of now, you can type in coupons or deals and it will only appear at a list. Planning to implement a Map API so that users can click on them and post coupons/deals.)

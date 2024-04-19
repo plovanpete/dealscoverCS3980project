@@ -1,9 +1,9 @@
 from fastapi import FastAPI
-from coupons import coupons_router
+from BackEnd.couponfinder.routes.coupons import coupons_router
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 from fastapi import Form, HTTPException, status
-from UserModel import User, registered_users, hash_password
+from BackEnd.users.models.UserModel import User, registered_users, hash_password
 from fastapi.responses import RedirectResponse
 
 
@@ -14,6 +14,9 @@ app.include_router(coupons_router)
 @app.get("/")
 async def view_index():
     return FileResponse("./FrontEnd/couponfinder/index.html")
+
+# Mount the static directory for general static files
+app.mount("/couponfinder", StaticFiles(directory="FrontEnd/couponfinder"), name="couponfinder")
 
 # Secret Menu Page
 @app.get("/dealscreetmenu/")
