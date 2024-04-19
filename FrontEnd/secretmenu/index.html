@@ -10,45 +10,51 @@
 </head>
 <body>
     <h2>My Saved Restaurants</h2>
-    <div id="restaurantGrid" class = "row">
+    <div id="restaurantGrid" class="row">
         <!-- Restaurants will be added dynamically here -->
     </div>
-</body>    
-<script>
-     // Sample data (replace this with your actual data)
-     var restaurants = [
-        { name: "Restaurant A", location: "Location A" },
-        { name: "Restaurant B", location: "Location B" },
-        { name: "Restaurant C", location: "Location C" },
-        { name: "Restaurant D", location: "Location D" },
-        { name: "Restaurant E", location: "Location E" },
-        { name: "Restaurant F", location: "Location F" },
-        { name: "Restaurant G", location: "Location G" }
-        // Add more restaurants as needed
-    ];
 
-    // Function to create restaurant grid
-    function createRestaurantGrid() {
-        var gridContainer = document.getElementById("restaurantGrid");
+    <!-- Bootstrap JS (optional if you need it) -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        // Function to fetch data from the API endpoint
+        async function fetchData() {
+            try {
+                const response = await fetch('/dealscreetmenu/'); // Assumes the HTML file is served from the same server
+                const data = await response.json();
+                return data;
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
+        }
 
-        // Loop through restaurants data and create grid items
-        restaurants.forEach(function(restaurant) {
-            var gridItem = document.createElement("div");
-            gridItem.className = "col-lg-4 col-md-6 mb-4"; // Bootstrap grid classes
-            gridItem.innerHTML = `
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">${restaurant.name}</h5>
-                        <p class="card-text">${restaurant.location}</p>
-                        <a href="#" class="btn btn-primary">View Details</a>
+        // Function to create restaurant grid
+        async function createRestaurantGrid() {
+            var gridContainer = document.getElementById("restaurantGrid");
+            const data = await fetchData();
+
+            // Create a card for each deal
+            data.forEach(function(deal) {
+                var card = document.createElement("div");
+                card.className = "col-lg-4 col-md-6 mb-4";
+
+                var cardContent = `
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">${deal.title}</h5>
+                            <p class="card-text">${deal.description}</p>
+                            <a href="#" class="btn btn-primary">View Details</a>
+                        </div>
                     </div>
-                </div>
-            `;
-            gridContainer.appendChild(gridItem);
-        });
-    }
+                `;
+                card.innerHTML = cardContent;
 
-    // Call the function to create the grid when the page loads
-    window.onload = createRestaurantGrid;
-</script>
+                gridContainer.appendChild(card);
+            });
+        }
+
+        // Call the function to create the grid when the page loads
+        window.onload = createRestaurantGrid;
+    </script>
+</body>
 </html>
