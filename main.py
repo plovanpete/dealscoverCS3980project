@@ -34,8 +34,6 @@ async def get_register():
     return FileResponse("./FrontEnd/register/index.html")
 
 
-
-
 @app.post("/register")
 async def register(username: str = Form(...), password: str = Form(...), email: str = Form(...)):
     if username in registered_users:
@@ -48,11 +46,9 @@ async def register(username: str = Form(...), password: str = Form(...), email: 
     return RedirectResponse(url="/login", status_code=status.HTTP_303_SEE_OTHER)
 
 
-
 @app.get("/login")
 async def get_login():
     return FileResponse("./FrontEnd/login/index.html")
-
 
 
 @app.post("/login")
