@@ -5,9 +5,14 @@ from fastapi.responses import FileResponse
 from fastapi import Form, HTTPException, status
 from BackEnd.users.models.UserModel import User, registered_users, hash_password
 from fastapi.responses import RedirectResponse
-
+from pymongo import MongoClient
+from fastapi.responses import JSONResponse
+import bcrypt
 
 app = FastAPI()
+
+client = MongoClient('mongodb+srv://admin:dealscover1@dealscovercluster.bxpq8ph.mongodb.net/')
+db = client.dealscover
 
 app.include_router(coupons_router)
 
@@ -23,6 +28,18 @@ app.mount("/couponfinder", StaticFiles(directory="FrontEnd/couponfinder"), name=
 async def view_secrets():
     return FileResponse("./FrontEnd/secretmenu/index.html")
 
+coupon_collection = db.couponordeal
+@app.post("/dealscreetmenu/")
+async def view_secrets(description: str = Form(...), title: str = Form(...)):
+    deal = coupon_collection.find()
+    # Pass the fetched data to your HTML template
+    return {
+        "description": description,
+        "title": title
+    }
+
+
+
 # User page 
 @app.get("/users/")
 async def view_secrets():
@@ -32,8 +49,6 @@ async def view_secrets():
 @app.get("/register")
 async def get_register():
     return FileResponse("./FrontEnd/register/index.html")
-
-
 
 
 @app.post("/register")
@@ -48,11 +63,9 @@ async def register(username: str = Form(...), password: str = Form(...), email: 
     return RedirectResponse(url="/login", status_code=status.HTTP_303_SEE_OTHER)
 
 
-
 @app.get("/login")
 async def get_login():
     return FileResponse("./FrontEnd/login/index.html")
-
 
 
 @app.post("/login")
@@ -73,3 +86,27 @@ app.mount("/static", StaticFiles(directory="FrontEnd/static"), name="static")
 # app.mount("/dealscreetmenu/", StaticFiles(directory="FrontEnd/secretmenu"), name = "secret")
 # app.mount("/users/", StaticFiles(directory="FrontEnd/users"), name = "users")
 # app.mount("/login/", StaticFiles(directory="FrontEnd/login"), name = "login")
+
+
+
+users_collection = db.users
+@app.post("/register")
+async def register(username: str = Form(...), password: str = Form(...), email: str = Form(...), admin: str = Form(...)):
+    # Check if the username already exists
+    if users_collection.find_one({"username": username}):
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Username already registered")
+   
+    hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
+    user_document = {
+        "username": username,
+        "password": hashed_password,
+        "email": email,
+        "admin": 'Y' if admin else 'N'
+    }
+    # Inserting the user document into the collection
+    users_collection.insert_one(user_document)
+   
+    # Redirect to the login page after successful registration
+    return RedirectResponse(url="/login", status_code=status.HTTP_303_SEE_OTHER)
+
+
