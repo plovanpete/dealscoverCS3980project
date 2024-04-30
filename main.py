@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends
 from BackEnd.couponfinder.routes.coupons import coupons_router
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
@@ -7,10 +7,12 @@ from BackEnd.users.models.UserModel import User, registered_users, hash_password
 from fastapi.responses import RedirectResponse
 from pymongo import MongoClient
 from fastapi.responses import JSONResponse
+from motor.motor_asyncio import AsyncIOMotorClient
 import bcrypt
 
 app = FastAPI()
-
+    
+#Gets MongoDB client sync.
 client = MongoClient('mongodb+srv://admin:dealscover1@dealscovercluster.bxpq8ph.mongodb.net/')
 db = client.dealscover
 
@@ -18,10 +20,28 @@ app.include_router(coupons_router)
 
 @app.get("/")
 async def view_index():
-    return FileResponse("./FrontEnd/couponfinder/index.html")
+    return FileResponse("./FrontEnd/couponfinder/views/index.html")
 
 # Mount the static directory for general static files
 app.mount("/couponfinder", StaticFiles(directory="FrontEnd/couponfinder"), name="couponfinder")
+
+'''# Define a route to fetch restaurant details
+@app.get("/restaurant")
+async def get_restaurant_details(latitude: float = Query(..., description="Latitude of the location"),
+                                 longitude: float = Query(..., description="Longitude of the location")):
+    # Find the closest restaurant based on provided coordinates
+    closest_restaurant = None
+    min_distance = float('inf')
+    for restaurant in restaurant_data:
+        distance = (restaurant["latitude"] - latitude)**2 + (restaurant["longitude"] - longitude)**2
+        if distance < min_distance:
+            closest_restaurant = restaurant
+            min_distance = distance
+    
+    if closest_restaurant:
+        return JSONResponse(closest_restaurant)
+    else:
+        return JSONResponse({"error": "No restaurant found nearby"})'''
 
 # Secret Menu Page
 @app.get("/dealscreetmenu/")
