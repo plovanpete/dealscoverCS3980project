@@ -5,7 +5,7 @@ from fastapi.templating import Jinja2Templates
 from fastapi.responses import FileResponse
 from fastapi import Form, HTTPException, status, Cookie, Depends, Response, Request
 from BackEnd.users.models.UserModel import User, registered_users, hash_password
-from fastapi.responses import RedirectResponse
+from fastapi.responses import RedirectResponse, JSONResponse
 from pymongo import MongoClient
 import bcrypt
 
@@ -14,7 +14,7 @@ client = MongoClient('mongodb+srv://admin:dealscover1@dealscovercluster.bxpq8ph.
 db = client.dealscover
 app.include_router(coupons_router)
 
-templates = Jinja2Templates(directory="path_to_your_templates")
+templates = Jinja2Templates(directory="/FrontEnd/couponfinder/")
 
 
 def get_current_user(token: str = Cookie(None)):
@@ -29,30 +29,51 @@ def get_current_user(token: str = Cookie(None)):
 async def view_index():
     return FileResponse("./FrontEnd/couponfinder/index.html")
 
+
 # Mount the static directory for general static files
 app.mount("/couponfinder", StaticFiles(directory="FrontEnd/couponfinder"), name="couponfinder")
-
+restaurants_collection = db.restaurants
 # Secret Menu Page
 @app.get("/dealscreetmenu/")
 async def view_secrets():
     return FileResponse("./FrontEnd/secretmenu/index.html")
 
-coupon_collection = db.couponordeal
-@app.post("/dealscreetmenu/")
-async def view_secrets(description: str = Form(...), title: str = Form(...)):
-    deal = coupon_collection.find()
-    # Pass the fetched data to your HTML template
-    return {
-        "description": description,
-        "title": title
-    }
 
+@app.post("/dealscreetmenu/")
+async def add_secrets(description: str = Form(...), title: str = Form(...), id: int = Form(...)):
+    if not title or not description:
+        return {"message": "Title or description cannot be empty"}
+    new_restaurant = {"title": title, "description": description}
+    restaurants_collection.insert_one(new_restaurant)
+    return {"message": "Restaurant added successfully"}
+
+@app.delete("/dealscreetmenu/")
+async def remove_restaurant(name: str):
+    result = restaurants_collection.delete_one({"title": name})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Restaurant not found")
+    return {"message": "Restaurant removed successfully"}
 
 
 # User page 
 @app.get("/users/")
 async def view_secrets():
     return FileResponse("./FrontEnd/users/index.html")
+
+
+users_collection = db.users
+import secrets
+
+@app.post("/login")
+async def login(response: Response, username: str = Form(...), password: str = Form(...)):
+    user = users_collection.find_one({"username": username})
+    if user and bcrypt.checkpw(password.encode('utf-8'), user['password']):
+        token = secrets.token_urlsafe(16)
+        users_collection.update_one({"username": username}, {"$set": {"token": token}})
+        response.set_cookie(key="token", value=token, httponly=True, samesite='Lax', secure=True)
+        return RedirectResponse(url="/?login=success", status_code=status.HTTP_303_SEE_OTHER)
+    else:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Incorrect username or password")
 
 
 @app.get("/register")
@@ -86,29 +107,24 @@ async def register(username: str = Form(...), password: str = Form(...), email: 
     return RedirectResponse(url="/login", status_code=status.HTTP_303_SEE_OTHER)
 
 
-# @app.get("/login")
-# async def get_login():
-#     return FileResponse("./FrontEnd/login/index.html")
-
-@app.get("/")
-async def view_index(request: Request, token: str = Cookie(None)):
-    user = get_current_user(token) if token else None
-    return templates.TemplateResponse("index.html", {"request": request, "user": user})
+@app.get("/login")
+async def get_login():
+    return FileResponse("./FrontEnd/login/index.html")
 
 
-users_collection = db.users
-import secrets
+# users_collection = db.users
+# import secrets
 
-@app.post("/login")
-async def login(response: Response, username: str = Form(...), password: str = Form(...)):
-    user = users_collection.find_one({"username": username})
-    if user and bcrypt.checkpw(password.encode('utf-8'), user['password']):
-        token = secrets.token_urlsafe(16)
-        users_collection.update_one({"username": username}, {"$set": {"token": token}})
-        response.set_cookie(key="token", value=token, httponly=True, samesite='Lax', secure=True)
-        return RedirectResponse(url="/?login=success", status_code=status.HTTP_303_SEE_OTHER)
-    else:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Incorrect username or password")
+# @app.post("/login")
+# async def login(response: Response, username: str = Form(...), password: str = Form(...)):
+#     user = users_collection.find_one({"username": username})
+#     if user and bcrypt.checkpw(password.encode('utf-8'), user['password']):
+#         token = secrets.token_urlsafe(16)
+#         users_collection.update_one({"username": username}, {"$set": {"token": token}})
+#         response.set_cookie(key="token", value=token, httponly=True, samesite='Lax', secure=True)
+#         return RedirectResponse(url="/?login=success", status_code=status.HTTP_303_SEE_OTHER)
+#     else:
+#         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Incorrect username or password")
 
 
 @app.get("/protected-route")
