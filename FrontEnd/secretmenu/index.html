@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Secret Menu</title>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+        <!-- Include jQuery -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <!-- Include Bootstrap JS -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    </head>
+<body>
+    <div class="container mt-5">
+        <h2>My Saved Restaurants</h2>
+        <div class="mb-3">
+            <input type="text" id="titleInput" placeholder="Title" class="form-control">
+            <textarea id="descriptionInput" placeholder="Description" class="form-control mt-2"></textarea>
+            <button onclick="add_secrets(titleInput, descriptionInput)" class="btn btn-primary mt-2">Add Restaurant</button>
+        </div>
+        <div id="restaurantGrid" class="row"></div>
+    </div>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", fetchData);
+
+    async function fetchData() {
+        const response = await fetch('/dealscreetmenu/');
+        const restaurants = await response.json();
+        createRestaurantGrid(restaurants);
+    }
+
+    function createRestaurantGrid(restaurants) {
+        const gridContainer = document.getElementById("restaurantGrid");
+        gridContainer.innerHTML = ''; // Clear previous entries
+        restaurants.forEach(restaurant => {
+            const card = document.createElement("div");
+            card.className = "col-md-4";
+            card.innerHTML = `
+                <div class="card mb-4 shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title">${restaurant.title}</h5>
+                        <p class="card-text">${restaurant.description}</p>
+                        <button onclick="deleteRestaurant('${restaurant.title}')" class="btn btn-danger">Delete</button>
+                    </div>
+                </div>
+            `;
+            gridContainer.appendChild(card);
+        });
+    }
+
+    async function add_secrets(titleInput, descriptionInput) {
+        const title = titleInput.value;
+        const description = descriptionInput.value;
+        const response = await fetch('/dealscreetmenu/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: new URLSearchParams({
+                'title': title,
+                'description': description
+            })
+        });
+
+        if (response.ok) {
+            fetchData(); // Refresh the list after adding
+        } else {
+            console.error('Failed to add restaurant');
+        }
+    }
+
+    async function deleteRestaurant(title) {
+        const response = await fetch('/dealscreetmenu/', {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ name: title })
+        });
+
+        if (response.ok) {
+            fetchData(); // Refresh the list after deletion
+        } else {
+            console.error('Failed to delete restaurant');
+        }
+    }
+    </script>
+</body>
+</html>
