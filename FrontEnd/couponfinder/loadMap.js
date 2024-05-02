@@ -2,7 +2,7 @@ let map; // Declare map as a global variable
 let markers = [];
 
 // Initialize the map
-function initMap() {
+async function initMap() {
   // Create a new map centered at a default location
   map = new google.maps.Map(document.getElementById("map"), {
     center: { lat: 41.66, lng: -91.53 }, // Default center coordinates
@@ -69,12 +69,28 @@ function initMap() {
 }
 
 // Asynchronously load the Google Maps JavaScript API
-function loadMapScript() {
+async function loadMapScript() {
   const script = document.createElement("script");
-  script.src = `https://maps.googleapis.com/maps/api/js?key=MAP_KEY&libraries=places&callback=initMap`;
+  script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyBRrTFJpK4ZqpjHwMF45OUdwwhRH0D_e5Y &libraries=places&callback=initMap&loading=async`;
   script.defer = true;
   document.body.appendChild(script);
 }
+
+// Fetch and display restaurant details based on selected location
+async function fetchRestaurantDetails(latitude, longitude) {
+  try {
+      // Make an HTTP GET request to the /restaurant endpoint with latitude and longitude parameters
+      const response = await fetch(`/restaurant?latitude=${latitude}&longitude=${longitude}`);
+      const restaurant = await response.json();
+
+      // Update restaurant details in HTML
+      document.getElementById('restaurantName').innerText = restaurant.name;
+      document.getElementById('restaurantAddress').innerText = restaurant.address;
+  } catch (error) {
+      console.error('Error fetching restaurant details:', error);
+  }
+}
+
 
 // Call the function to load the map script asynchronously
 loadMapScript();
