@@ -6,18 +6,28 @@ from fastapi import Form, HTTPException, status
 from BackEnd.users.models.UserModel import User, registered_users, hash_password
 from fastapi.responses import RedirectResponse
 from pymongo import MongoClient
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, HTMLResponse
 import bcrypt
+import logging
 
 app = FastAPI()
 
+# Set up logging
+logging.basicConfig(filename='app.log', level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+
+# Connect to MongoDB
 client = MongoClient('mongodb+srv://admin:dealscover1@dealscovercluster.bxpq8ph.mongodb.net/')
-db = client.dealscover
+db = client.userDB
+coupon_collection = db.couponordeal
+
+# Serve static files from the 'static' directory
+app.mount("/static", StaticFiles(directory="static"), name="static")
 
 app.include_router(coupons_router)
 
 @app.get("/")
 async def view_index():
+    logging.info('Accessed index page')
     return FileResponse("./FrontEnd/couponfinder/index.html")
 
 # Mount the static directory for general static files
@@ -26,17 +36,15 @@ app.mount("/couponfinder", StaticFiles(directory="FrontEnd/couponfinder"), name=
 # Secret Menu Page
 @app.get("/dealscreetmenu/")
 async def view_secrets():
+    logging.info('Accessed Secret menu page')
     return FileResponse("./FrontEnd/secretmenu/index.html")
 
-coupon_collection = db.couponordeal
-@app.post("/dealscreetmenu/")
-async def view_secrets(description: str = Form(...), title: str = Form(...)):
-    deal = coupon_collection.find()
-    # Pass the fetched data to your HTML template
-    return {
-        "description": description,
-        "title": title
-    }
+@app.get("/dealscreetmenu/", response_class=JSONResponse)
+async def view_secrets():
+    logging.info('Accessed Secret menu page')
+    deals = coupon_collection.find()
+    deals_list = [{"title": deal.get("title", ""), "description": deal.get("description", "")} for deal in deals]
+    return deals_list
 
 
 
@@ -53,6 +61,7 @@ async def get_register():
 
 @app.post("/register")
 async def register(username: str = Form(...), password: str = Form(...), email: str = Form(...)):
+    logging.info(f'Registered new user: {username}')
     if username in registered_users:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Username already registered")
     
@@ -70,6 +79,7 @@ async def get_login():
 
 @app.post("/login")
 async def login(username: str = Form(...), password: str = Form(...)):
+    logging.info(f'{username} Attempted login')
     if username != "expected_username" or password != "expected_password":
         raise HTTPException(status_code=400, detail="Incorrect username or password")
     # Redirect with a query parameter indicating a successful login
