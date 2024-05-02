@@ -1,5 +1,8 @@
 from fastapi import FastAPI, Depends
+from fastapi.middleware.cors import CORSMiddleware
 from BackEnd.couponfinder.routes.coupons import coupons_router
+from BackEnd.restaurants.routes.restaurants import restaurants_router
+from BackEnd.restaurants.model.RestaurantModel import RestaurantRequest
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 from fastapi import Form, HTTPException, status
@@ -11,12 +14,31 @@ from motor.motor_asyncio import AsyncIOMotorClient
 import bcrypt
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Adjust this to allow requests from specific origins
+    allow_credentials=True,
+    allow_methods=["GET", "POST", "PUT", "DELETE"],
+    allow_headers=["*"],
+)
+
     
 #Gets MongoDB client sync.
-client = MongoClient('mongodb+srv://admin:dealscover1@dealscovercluster.bxpq8ph.mongodb.net/')
-db = client.dealscover
+'''client = MongoClient('mongodb+srv://admin:dealscover1@dealscovercluster.bxpq8ph.mongodb.net/')
+db = client.dealscover'''
+
+# MongoDB connection URI
+MONGO_URI = "mongodb://localhost:27017"
+# Connect to MongoDB
+client = MongoClient(MONGO_URI)
+# Database
+db = client["dealscover"]
+# Collection
+restaurants_collection = db["restaurants"]
 
 app.include_router(coupons_router)
+app.include_router(restaurants_router)
 
 @app.get("/")
 async def view_index():
@@ -24,24 +46,19 @@ async def view_index():
 
 # Mount the static directory for general static files
 app.mount("/couponfinder", StaticFiles(directory="FrontEnd/couponfinder"), name="couponfinder")
+app.mount("/restaurants", StaticFiles(directory="FrontEnd/restaurants"), name="restaurants")
 
-'''# Define a route to fetch restaurant details
-@app.get("/restaurant")
-async def get_restaurant_details(latitude: float = Query(..., description="Latitude of the location"),
-                                 longitude: float = Query(..., description="Longitude of the location")):
-    # Find the closest restaurant based on provided coordinates
-    closest_restaurant = None
-    min_distance = float('inf')
-    for restaurant in restaurant_data:
-        distance = (restaurant["latitude"] - latitude)**2 + (restaurant["longitude"] - longitude)**2
-        if distance < min_distance:
-            closest_restaurant = restaurant
-            min_distance = distance
-    
-    if closest_restaurant:
-        return JSONResponse(closest_restaurant)
-    else:
-        return JSONResponse({"error": "No restaurant found nearby"})'''
+# FastAPI route to handle POST requests with restaurant data
+@app.post("/restaurants/")
+def create_restaurant(restaurant: RestaurantRequest):
+    # Access the restaurant data sent from the client
+    name = restaurant.name
+    address = restaurant.address
+    zipcode = restaurant.zipcode
+
+    # Perform actions with the restaurant data (e.g., saving to a database)
+    # Here, we'll just return the received data as confirmation
+    return {"name": name, "address": address, "zipcode": zipcode}
 
 # Secret Menu Page
 @app.get("/dealscreetmenu/")
