@@ -1,5 +1,8 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends
+from fastapi.middleware.cors import CORSMiddleware
 from BackEnd.couponfinder.routes.coupons import coupons_router
+from BackEnd.restaurants.routes.restaurants import restaurants_router
+from BackEnd.restaurants.model.RestaurantModel import RestaurantRequest
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import FileResponse
@@ -7,12 +10,43 @@ from fastapi import Form, HTTPException, status, Cookie, Depends, Response, Requ
 from BackEnd.users.models.UserModel import User, registered_users, hash_password
 from fastapi.responses import RedirectResponse, JSONResponse
 from pymongo import MongoClient
+from fastapi.responses import JSONResponse
+from motor.motor_asyncio import AsyncIOMotorClient
+import bcrypt
+
+app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Adjust this to allow requests from specific origins
+    allow_credentials=True,
+    allow_methods=["GET", "POST", "PUT", "DELETE"],
+    allow_headers=["*"],
+)
+
+    
+#Gets MongoDB client sync.
+'''client = MongoClient('mongodb+srv://admin:dealscover1@dealscovercluster.bxpq8ph.mongodb.net/')
+db = client.dealscover'''
+
+# MongoDB connection URI
+MONGO_URI = "mongodb://localhost:27017"
+# Connect to MongoDB
+client = MongoClient(MONGO_URI)
+# Database
+db = client["dealscover"]
+# Collection
+restaurants_collection = db["restaurants"]
+
+
 import bcrypt
 
 app = FastAPI()
 client = MongoClient('mongodb+srv://admin:dealscover1@dealscovercluster.bxpq8ph.mongodb.net/')
 db = client.dealscover
+
 app.include_router(coupons_router)
+app.include_router(restaurants_router)
 
 templates = Jinja2Templates(directory="/FrontEnd/couponfinder/")
 
@@ -27,12 +61,29 @@ def get_current_user(token: str = Cookie(None)):
 
 @app.get("/")
 async def view_index():
-    return FileResponse("./FrontEnd/couponfinder/index.html")
+    return FileResponse("./FrontEnd/couponfinder/views/index.html")
 
 
 # Mount the static directory for general static files
 app.mount("/couponfinder", StaticFiles(directory="FrontEnd/couponfinder"), name="couponfinder")
+
+app.mount("/restaurants", StaticFiles(directory="FrontEnd/restaurants"), name="restaurants")
+
+# FastAPI route to handle POST requests with restaurant data
+@app.post("/restaurants/")
+def create_restaurant(restaurant: RestaurantRequest):
+    # Access the restaurant data sent from the client
+    name = restaurant.name
+    address = restaurant.address
+    zipcode = restaurant.zipcode
+
+    # Perform actions with the restaurant data (e.g., saving to a database)
+    # Here, we'll just return the received data as confirmation
+    return {"name": name, "address": address, "zipcode": zipcode}
+
+
 restaurants_collection = db.restaurants
+
 # Secret Menu Page
 @app.get("/dealscreetmenu/")
 async def view_secrets():
