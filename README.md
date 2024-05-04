@@ -42,25 +42,50 @@ This should fix the long loading freeze if it happens.
 ## Descriptions of main:
 **main.py**: The file that allows the server to run and sets up static files so that we can import other modules or files from different compartments.
 
-#### _Inside the Frontend Folder_:
+## Frontend
 
-It is compartmentalized into different folders for the files it needs
-There is:
-**couponfinder** - has the views folder which is just the index.html to see the webpage & logic folder which helps connect frontend to backend using CRUD operations.
-**login** - As of now, only has the testing webpage.
-**register** - Only has the webpage, and has a form to fill out!
-**secretmenu** - WIP, has two folders, logic and views. Logic contains WIP code that is used to connect to the backend. (Trying to figure out how to use Google Cloud Service for images)
-**users** - As of now, only has the testing webpage.
+- **couponfinder**:
+  - views folder contains the index.html to view the webpage
+  - logic folder has files that helps connect frontend to backend using CRUD operations
 
-#### _Inside the BackendFolder_:
-It is compartmentalized into different folders for the type it needs.
-There is:
-**couponfinder** - contains pydantic models for coupons in models folder; routes which is the endpoint APIs for backend, using the CRUD operations.
-**gcs_imageuploading** - Does not work; was planning on using Google Cloud Services (GCS) to upload an image and then post it with the recipes. *(Currently WIP)*
-**restaurants** - contains the pydantic models for restaurants in models folder; also contains routes, which is the endpoint APIs for backend and uses CRUD operations.
-**secretmenu** - WIP, contains the pydantic models for recipes in models folder; also contains routes, which creates the endpoint APIs for backend and uses CRUD operations 
-(Does not work; trying to implement GCS with it)
-**users** - Only contains the UserModel; which is used to create the pydantic models of the user.
+- **login**:
+  - Only has the testing webpage
+
+- **register**:
+  - Only has the webpage with a form to fill out
+
+- **secretmenu**:
+  - WIP
+  - Contains two folders: logic and views
+  - Logic folder contains code to connect to the backend
+  - Trying to figure out how to use Google Cloud Service for images, does not work for now.
+
+- **users**:
+  - Only has the testing webpage
+
+## Backend
+
+- **couponfinder**:
+  - Contains pydantic models for coupons in models folder
+  - Routes are the endpoint APIs for backend, using CRUD operations
+
+- **gcs_imageuploading**:
+  - Does not work; planned to use Google Cloud Services (GCS) to upload an image and post it with the recipes
+  - Currently WIP
+
+- **restaurants**:
+  - Contains pydantic models for restaurants in models folder
+  - Routes are the endpoint APIs for backend and use CRUD operations
+
+- **secretmenu**:
+  - WIP
+  - Contains pydantic models for recipes in models folder
+  - Routes create the endpoint APIs for backend and use CRUD operations
+  - Trying to implement GCS with it
+
+- **users**:
+  - Only contains the UserModel used to create the pydantic models of the user
+
 
 ## Roadmap:
 The document and outline can be found here for final project:
