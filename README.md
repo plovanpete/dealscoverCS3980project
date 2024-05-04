@@ -3,7 +3,6 @@
 
 
 A work in progress application where you find deals/coupons near you and post them!
-(As of now, you can type in coupons or deals and it will only appear at a list. Planning to implement a Map API so that users can click on them and post coupons/deals.)
 
 ## Instructions to start it and load it:
 First, you'll want to create a virtual environment. Do so by using this command:
