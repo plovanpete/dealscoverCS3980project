@@ -65,6 +65,8 @@ This should fix the long loading freeze if it happens.
 
 ## Backend
 Backend currently only logs restaurants that are created, deleted, or updated.
+It can also log when recipes are created if you create it through the backend.
+
 - **couponfinder**:
   - Contains pydantic models for coupons in models folder
   - Routes are the endpoint APIs for backend, using CRUD operations
