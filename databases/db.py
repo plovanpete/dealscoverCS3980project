@@ -1,12 +1,20 @@
-from pymongo import MongoClient
+from motor.motor_asyncio import AsyncIOMotorClient
 
 # MongoDB connection URL
 url = 'mongodb+srv://admin:dealscover1@dealscovercluster.bxpq8ph.mongodb.net/'
-#password = dealscover1
-dbName = 'userDB' # This will create the database if it doesn't already exist
+dbName = 'userDB'  # This will create the database if it doesn't already exist
 
-client = MongoClient(url)
+async def get_mongo_client() -> AsyncIOMotorClient:
+    try:
+        client = AsyncIOMotorClient(url)
+        return client
+    except Exception as e:
+        print(f"Error connecting to MongoDB: {e}")
+        raise
 
-def get_db():
+
+async def get_db():
+    client = await get_mongo_client()
     db = client[dbName]
     return db
+
