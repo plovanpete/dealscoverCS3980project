@@ -64,7 +64,7 @@ This should fix the long loading freeze if it happens.
   - Only has the testing webpage
 
 ## Backend
-
+Backend currently only logs restaurants that are created, deleted, or updated.
 - **couponfinder**:
   - Contains pydantic models for coupons in models folder
   - Routes are the endpoint APIs for backend, using CRUD operations
