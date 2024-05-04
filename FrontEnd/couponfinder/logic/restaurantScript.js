@@ -1,3 +1,4 @@
+
 // Function to get and render all restaurants in the table of the HTML.
 async function getAllRestaurants() {
     const response = await fetch('http://127.0.0.1:8000/allrestaurants/');
@@ -9,12 +10,14 @@ async function getAllRestaurants() {
     restaurants.forEach(restaurant => {
         const row = document.createElement('tr');
         row.innerHTML = `
+            <td>${restaurant._id}</td>
             <td>${restaurant.name}</td>
             <td>${restaurant.address}</td>
             <td>${restaurant.zipcode}</td>
             <td>
                 <button type="button" class="btn btn-danger btn-sm" onclick="deleteRestaurant('${restaurant.name}', '${restaurant.address}')">Delete</button>
                 <button type="button" class="btn btn-warning btn-sm" onclick="openupdateRestaurant('${restaurant.name}', '${restaurant.address}', '${restaurant.zipcode}')">Update</button>
+                <button type="button" class="btn btn-primary" onclick="onViewCoupons('${restaurant._id}')">View Coupons</button>
             </td>
         `;
         tableBody.appendChild(row);
@@ -33,26 +36,51 @@ async function getRestaurantByNameAndAddress(name, address) {
 
 
 // Function creates a new restaurant
-async function createRestaurant(name, address, zipcode) {
-    const response = await fetch('http://127.0.0.1:8000/restaurants/', {
+async function createRestaurant() {
+    // Get the values from the form inputs
+    const name = document.getElementById('nameInput').value;
+    const address = document.getElementById('addressInput').value;
+    const zipcode = document.getElementById('zipcodeInput').value;
+
+    // Check if any of the required fields is empty
+    if (!name || !address || !zipcode) {
+        alert("Please fill in all the required fields!");
+        return;
+    }
+
+    const response = await fetch('http://127.0.0.1:8000/restaurants', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-            id: id,
             name: name,
             address: address,
             zipcode: zipcode,
         }),
     });
+
+    if (!response.ok) {
+        const message = `An error has occurred: ${response.status}`;
+        throw new Error(message);
+    }
+
     const insertedRestaurant = await response.json();
     console.log(insertedRestaurant);
-    getAllRestaurants();
-    // Handle the formatted restaurant data as needed
+    window.location.reload();
+    // Update the list of restaurants here, if necessary
 }
 
+// Add an event listener to the form to handle the submit event
+document.getElementById('addRestaurantForm').addEventListener('submit', function(event) {
+    event.preventDefault(); // Prevent the default form submission
+    createRestaurant();
+});
 
+document.getElementById('updateRestaurantForm').addEventListener('submit', async (event) => {
+    event.preventDefault(); // Prevent the default form submission
+    await updateRestaurant();
+});
 
 // Function updates the JSON data of the restaurant.
 async function updateRestaurant() {
@@ -90,6 +118,7 @@ async function updateRestaurant() {
     }
 
     console.log(result);
+    window.location.reload();
 }
 
 
@@ -100,8 +129,42 @@ async function deleteRestaurant(name, address) {
     });
     const result = await response.json();
     console.log(result);
-    getAllRestaurants();
+    window.location.reload();
     // Handle the result data as needed
+}
+
+// Coupon Section --------------------------------------------------------------------
+
+// Function to fetch coupons for a specific restaurant
+async function getCouponsForRestaurant(restaurantId) {
+    const response = await fetch(`http://127.0.0.1:8000/restaurants/${restaurantId}/couponlist/`);
+    const coupons = await response.json();
+    return coupons;
+}
+
+// Function to display coupons in a modal
+async function showCouponsModal(restaurantId) {
+    const coupons = await getCouponsForRestaurant(restaurantId);
+
+    const modalBody = document.getElementById('couponModalBody');
+
+    coupons.forEach(coupon => {
+        const couponItem = document.createElement('div');
+        couponItem.classList.add('coupon-item');
+        couponItem.innerHTML = `
+            <span>${coupon.title}</span>
+            <p>${coupon.description}</p>
+        `;
+        modalBody.appendChild(couponItem);
+    });
+
+    // Show the modal
+    $('#couponModal').modal('show');
+}
+
+// Function to handle click event of "View Coupons" button for a restaurant
+async function onViewCoupons(restaurantId) {
+    showCouponsModal(restaurantId);
 }
 
 
