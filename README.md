@@ -9,14 +9,14 @@ First, you'll want to create a virtual environment. Do so by using this command:
 ```
 python -m venv venv
 ```
-Or if you already have it in the folder, do this command *(Only for Windows)*:
+Do this command after you created your venv *(Only for Windows)*:
 ```
 ./venv/Scripts/activate  
 ```
 
 Afterwards, install the requirements needed: 
 ```
-python -r install requirements.txt
+pip install -r requirements.txt
 ```
 
 You'll then have to connect to MongoDB. Start up MongoDB Compass and connect to the server. 
