@@ -7,6 +7,36 @@
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- Background CSS -->
+    <style>
+      body::after {
+      content: "";
+      position: fixed; /* or absolute */
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-image: url('../couponfinder/views/food.png'); /* Replace with your image path */
+      background-repeat: no-repeat;
+      background-size: cover;
+      animation: slide 10s linear infinite;
+      opacity: 0.05; /* Adjust the opacity as needed */
+      z-index: -1;
+    }
+
+    @keyframes slide {
+      from { background-position: 0 0; }
+      to { background-position: 100% 0; }
+    }
+
+    
+    .coupon-item {
+      border: 1px solid #000; /* Adjust color and width as needed */
+      padding: 10px;
+      margin-bottom: 10px;
+    }
+
+    </style>
 </head>
 <body>
 
@@ -59,6 +89,7 @@
   <table class="table mt-3">
     <thead>
       <tr>
+        <th>ID</th>
         <th>Name</th>
         <th>Address</th>
         <th>Zipcode</th>
@@ -82,7 +113,7 @@
       <div class="modal-header">
         <h5 class="modal-title" id="addRestaurantModalLabel">Add New Restaurant</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
+          <span aria-hidden="true">×</span>
         </button>
       </div>
       <div class="modal-body">
@@ -90,22 +121,23 @@
         <form id="addRestaurantForm">
           <div class="form-group">
             <label for="nameInput">Name:</label>
-            <input type="text" class="form-control" id="nameInput" placeholder="Enter restaurant name">
+            <input type="text" class="form-control" id="nameInput" placeholder="Enter restaurant name" required>
           </div>
           <div class="form-group">
             <label for="addressInput">Address:</label>
-            <input type="text" class="form-control" id="addressInput" placeholder="Enter restaurant address">
+            <input type="text" class="form-control" id="addressInput" placeholder="Enter restaurant address" required>
           </div>
           <div class="form-group">
             <label for="zipcodeInput">Zipcode:</label>
-            <input type="text" class="form-control" id="zipcodeInput" placeholder="Enter zipcode">
+            <input type="text" class="form-control" id="zipcodeInput" placeholder="Enter zipcode" required>
           </div>
-          <button type="submit" class="btn btn-primary" onclick="createRestaurant()">Add Restaurant</button>
+          <button type="submit" class="btn btn-primary">Add Restaurant</button>
         </form>
       </div>
     </div>
   </div>
 </div>
+
 
 <!-- Update Restaurant Modal -->
 <div class="modal fade" id="updateRestaurantModal" tabindex="-1" role="dialog" aria-labelledby="updateRestaurantModalLabel" aria-hidden="true">
@@ -114,30 +146,110 @@
       <div class="modal-header">
         <h5 class="modal-title" id="updateRestaurantModalLabel">Update Restaurant</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
+          <span aria-hidden="true">×</span>
         </button>
       </div>
       <div class="modal-body">
         <!-- Restaurant Form -->
         <form id="updateRestaurantForm">
           <div class="form-group">
-            <label for="updateNameInput">Name:</label>
-            <input type="text" class="form-control" id="updateNameInput" placeholder="Enter updated restaurant name">
+            <label for="updateNameInput">Current Name:</label>
+            <input type="text" class="form-control" id="updateNameInput" placeholder="Enter current restaurant name">
           </div>
           <div class="form-group">
-            <label for="updateAddressInput">Address:</label>
-            <input type="text" class="form-control" id="updateAddressInput" placeholder="Enter updated restaurant address">
+            <label for="updateAddressInput">Current Address:</label>
+            <input type="text" class="form-control" id="updateAddressInput" placeholder="Enter current restaurant address">
           </div>
           <div class="form-group">
-            <label for="updateZipcodeInput">Zipcode:</label>
-            <input type="text" class="form-control" id="updateZipcodeInput" placeholder="Enter updated restaurant zipcode">
+            <label for="updateZipcodeInput">Current Zipcode:</label>
+            <input type="text" class="form-control" id="updateZipcodeInput" placeholder="Enter current restaurant zipcode">
           </div>
-          <button type="submit" class="btn btn-primary" onclick="updateRestaurant()">Update Restaurant</button>
+          <div class="form-group">
+            <label for="newName">New Name:</label>
+            <input type="text" class="form-control" id="newName" placeholder="Enter new restaurant name">
+          </div>
+          <div class="form-group">
+            <label for="newAddress">New Address:</label>
+            <input type="text" class="form-control" id="newAddress" placeholder="Enter new restaurant address">
+          </div>
+          <div class="form-group">
+            <label for="newZipcode">New Zipcode:</label>
+            <input type="text" class="form-control" id="newZipcode" placeholder="Enter new restaurant zipcode">
+          </div>
+          <button type="submit" class="btn btn-primary">Update Restaurant</button>
         </form>
       </div>
     </div>
   </div>
 </div>
+
+<!-- View Coupons Modal -->
+<div class="modal fade" id="couponModal" tabindex="-1" role="dialog" aria-labelledby="couponModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="couponModalLabel">Coupons</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" id="couponModalBody">
+        <!-- Coupons will be dynamically added here -->
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-dismiss="modal" data-toggle="modal" data-target="#addCouponModal">Add Coupon</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Add Coupon Modal -->
+<div class="modal fade" id="addCouponModal" tabindex="-1" role="dialog" aria-labelledby="addCouponModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="addCouponModalLabel">Add Coupon</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <!-- Coupon Form -->
+        <form id="addCouponForm">
+          <div class="form-group">
+            <label for="restaurantIdInput">Restaurant ID:</label>
+            <input type="text" class="form-control" id="restaurantIdInput" placeholder="Restaurant ID" readonly>
+          </div>
+          <div class="form-group">
+            <label for="titleInput">Title:</label>
+            <input type="text" class="form-control" id="titleInput" placeholder="Enter coupon title" required>
+          </div>
+          <div class="form-group">
+            <label for="descriptionInput">Description:</label>
+            <textarea class="form-control" id="descriptionInput" rows="3" placeholder="Enter coupon description" required></textarea>
+          </div>
+          <button type="button" class="btn btn-primary" id="confirmAddCouponBtn">Confirm Add Coupon</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<!-- Closes the Modal after updating -->
+<script>
+  // Add an event listener to the form submission
+  document.getElementById('updateRestaurantForm').addEventListener('submit', function(event) {
+    // Prevent the default form submission behavior
+    event.preventDefault();
+    // Close the modal
+    $('#updateRestaurantModal').modal('hide');
+  });
+</script>
+
 
 
 <!-- Include the Bootstrap and jQuery JavaScript -->
@@ -148,6 +260,7 @@
 <!-- Include the Google Maps API script -->
 <script src="../couponfinder/loadMap.js" defer></script>
 <script src="../couponfinder/logic/restaurantScript.js" defer></script>
+<script src="../couponfinder/logic/couponScript.js" defer></script>
 <script src="../couponfinder/logic/updateRestaurant.js" defer></script>
 
 </body>

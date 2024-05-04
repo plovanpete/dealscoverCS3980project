@@ -97,7 +97,8 @@ async def delete_restaurant(name: str, address: str, client: AsyncIOMotorClient 
 
 # Helper function to remove "_id" entry from the document
 def remove_id_from_document(document: dict) -> dict:
-    document.pop('_id', None)
+    if document and '_id' in document:
+        document['_id'] = str(document['_id'])  # Convert ObjectId to string
     return document
 
 
